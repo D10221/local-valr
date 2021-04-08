@@ -2,4 +2,3 @@
 echo NOTE: use this as workaround 'if' husky/lint-staged not working
 git add $@ 
 yarn lint-staged
-yarn test

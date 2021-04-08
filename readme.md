@@ -53,7 +53,8 @@ curl --location --request POST 'https://api.valr.com/v1/orders/limit' \
 	"quantity": "0.100000",
 	"price": "10000",
 	"pair": "BTCZAR",
-	"postOnly": true,
 	"customerOrderId": "1235"
 }'
 ```
+
+see `./scripts/` for more

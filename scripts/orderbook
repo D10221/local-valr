@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+echo usage: API_KEY=blahblahblah ./scripts/orderbook BTCZAR
+
+curl http://localhost:5000/api/$1/orderbook \
+--header "API-KEY: $API_KEY" 
+
+echo '\n'
