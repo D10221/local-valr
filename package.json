@@ -22,7 +22,8 @@
     "typescript": "^4.2.3"
   },
   "scripts": {
-    "start": "node --inspect -r ts-node/register src/index.ts",
+    "dev": "node --inspect -r ts-node/register src/index.ts",
+    "start": "node .",
     "build": "rm dist -rf && esbuild --platform=node --bundle src/index.ts --outdir=dist --sourcemap",
     "test": "mocha",
     "format": "prettier src/**/*.ts test/**/*.ts ./*.json -w",
@@ -31,23 +32,11 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "yarn test"
+      "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {
-    "*.js": [
-      "prettier -w",
-      "yarn test"
-    ],
-    "*.ts": [
-      "prettier -w",
-      "yarn test"
-    ],
-    "*.md": [
-      "prettier -w"
-    ],
-    "*.json": [
+    "*.(js|ts|md|json)": [
       "prettier -w"
     ]
   }
