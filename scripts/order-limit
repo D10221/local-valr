@@ -1,13 +1,35 @@
-#!/usr/bin/env sh
+#!/usr/bin/env node
 
-curl --location --request POST 'http://localhost:5000/api/orders/limit' \
---header 'Content-Type: application/json' \
---header "API-KEY: $API_KEY" \
---data-raw '{
-	"side": "SELL",
-	"quantity": "0.100000",
-	"price": "10000",
-	"currencyPair": "BTCZAR",
-	"postOnly": true,
-	"customerOrderId": "1235"
-}'
+const fetch = require("node-fetch");
+
+const [side, quantity, price, currencyPair, customerOrderId] = process.argv.slice(2);
+
+const data = {
+  side,
+  quantity,
+  price,
+  currencyPair,
+  customerOrderId
+};
+
+const url = "http://localhost:5000/api/orders/limit";
+
+/** run  */
+((async () => {
+  try {
+    const r = await fetch(url, {
+      method: "POST", body: JSON.stringify(data), headers: {
+        "API-KEY": process.env.API_KEY,
+        "Content-Type": "application/json"
+      }
+    });
+    if (!r.ok) throw new Error(`${r.statusText} (${r.status})`);
+    return `Service response: ${await r.text()}`;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+})())
+  .then(console.log).catch(error => {
+    console.error(error);
+    process.exit(-1);
+  })
