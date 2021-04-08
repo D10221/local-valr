@@ -1,7 +1,7 @@
 import assert from "assert";
 /** */
-describe("test", () => {
-  it("works", () => {
+describe("TODO", () => {
+  it("should work", () => {
     assert.ok(true);
   });
 });
