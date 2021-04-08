@@ -36,7 +36,18 @@
     }
   },
   "lint-staged": {
-    "*.{js,ts,md,json}": [
+    "*.js": [
+      "prettier -w",
+      "yarn test"
+    ],
+    "*.ts": [
+      "prettier -w",
+      "yarn test"
+    ],
+    "*.md": [
+      "prettier -w"
+    ],
+    "*.json": [
       "prettier -w"
     ]
   }
