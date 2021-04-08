@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { groupBy, sortBy, sum, take } from "ramda";
 import * as currencyPairs from "./currency-pairs";
-import type { LimitRequest, Order, OrderBook, Orders, State } from "./state";
+import type { State } from "./state";
+import { LimitRequest, Order, OrderBook, Orders } from "./types";
 
 const all = (state: State) => Object.values(state.orders);
 const sortByPrice = sortBy((x: Order) => x.price);
 const byCurrencyPair = currencyPairs.selector(all);
 const groupBySide = groupBy((x: Order) => x.side);
 const groupByPrice = groupBy((x: Order) => x.price);
-
 /** ??? */
 function aggregate(asks: Order[]) {
   return Object.values(groupByPrice(asks)).map((x) => {
@@ -19,7 +19,7 @@ function aggregate(asks: Order[]) {
     } as OrderBook;
   });
 }
-/** */
+/** Selectors */
 export const select = {
   raw: (state: State) => state.orders,
   all,
@@ -41,7 +41,7 @@ export const select = {
     }
   },
 };
-/** */
+/** Redux's store's slice*/
 const slice = createSlice({
   name: "orders",
   initialState: {} as Orders,

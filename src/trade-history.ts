@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import * as currencyPairs from "./currency-pairs";
-import type {
+import type { State } from "./state";
+import {
   CurrencyPair,
   Orders,
-  State,
   TradeHistory,
   TradeHistoryRecord,
-} from "./state";
+} from "./types";
 const slice = createSlice({
   name: "tradeHistory",
   initialState: {} as TradeHistory,

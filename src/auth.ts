@@ -5,6 +5,8 @@ export function getHash(x: string) {
   return createHmac("sha256", process.env.SECRET).update(x).digest("hex");
 }
 
+const isDev = process.env.NODE_ENV !== "production";
+
 export default function useAuth(): RequestHandler {
   if (!process.env.SECRET) {
     throw new Error("SECRET required!");
@@ -13,7 +15,14 @@ export default function useAuth(): RequestHandler {
     throw new Error("API_KEY required!");
   }
 
-  console.log("API_KEY: %s", getHash(process.env.API_KEY));
+  if (isDev) {
+    console.debug(
+      "Run in 'production' to hide the api key hash\n\tAPI_KEY: %s",
+      getHash(process.env.API_KEY)
+    );
+  } else {
+    console.info("Run in 'development' to see the api key hash");
+  }
 
   return (req, _res, next) => {
     try {

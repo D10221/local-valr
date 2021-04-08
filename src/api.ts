@@ -1,10 +1,11 @@
 import { RequestHandler, Router } from "express";
 import * as orders from "./orders";
-import validate, { isCurrencyPair } from "./validate";
+import validate, { ValidationError } from "./validate";
+import * as currencyPairs from "./currency-pairs";
 import * as tradeHistory from "./trade-history";
 import uid from "./uid";
 /**
- *
+ * @description orderbook request handler
  */
 export const orderbook: RequestHandler = (req, res, next) => {
   try {
@@ -17,7 +18,9 @@ export const orderbook: RequestHandler = (req, res, next) => {
     next(error);
   }
 };
-/** */
+/**
+ * orders limit request handler
+ */
 export const ordersLimit: RequestHandler = (req, res, next) => {
   try {
     const _validate = validate(req.store);
@@ -30,13 +33,14 @@ export const ordersLimit: RequestHandler = (req, res, next) => {
     next(error);
   }
 };
-/** */
+/**
+ * trade history request handler
+ */
 export const tradehistory: RequestHandler = async (req, res, next) => {
   try {
     const { currencyPair } = req.params;
-    if (!isCurrencyPair(currencyPair)) {
-      // ... sorry
-      throw Object.assign(new Error("BAD 'currencyPair'"), { code: 400 });
+    if (!currencyPairs.isValid(currencyPair)) {
+      throw new ValidationError("BAD 'currencyPair'");
     }
     const state = req.store.getState();
     return res.json(

@@ -1,25 +1,20 @@
 import { Store } from "@reduxjs/toolkit";
 import { equals } from "ramda";
-import { CurrencyPair, LimitRequest, Side, State } from "./state";
-
-const currencyPairs: CurrencyPair[] = ["BTCZAR", "ETHZAR", "XRPZAR"];
-
-export function isCurrencyPair(x: any): x is CurrencyPair {
-  return !!currencyPairs.find(equals(x));
-}
-
-export default function validatestore(store: Store<State>) {
-  const sides: Side[] = ["SELL", "BUY"];
-
+import * as currencyPairs from "./currency-pairs";
+import * as sides from "./sides";
+import { State } from "./state";
+import { LimitRequest } from "./types";
+/** */
+export default function validate(store: Store<State>) {
   return {
     limitRequest: (x: LimitRequest): x is LimitRequest => {
-      if (!isCurrencyPair(x.currencyPair)) {
+      if (!currencyPairs.isValid(x.currencyPair)) {
         throw new ValidationError(
-          `BAD 'currencyPairs' [${currencyPairs.join()}]`
+          `BAD 'currencyPairs' [${currencyPairs.values.join("|")}]`
         );
       }
-      if (!sides.find(equals(x.side))) {
-        throw new ValidationError(`BAD 'side' [${sides.join()}]`);
+      if (!sides.isValid(x.side)) {
+        throw new ValidationError(`BAD 'side' [${sides.values.join("|")}]`);
       }
       if (!validNumber(x.price)) {
         throw new ValidationError(`BAD 'price'`);
@@ -28,6 +23,7 @@ export default function validatestore(store: Store<State>) {
         throw new ValidationError(`BAD 'quantity'`);
       }
       if (
+        // TODO: selector or keep loose reference ?
         Object.values(store.getState().orders)
           .map((x) => x.customerOrderId)
           .find(equals(x.customerOrderId))

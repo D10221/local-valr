@@ -17,7 +17,7 @@ dotenv.config({
     const server = await start(app);
     await configure(app);
     const { address, family, port } = server.address() as any;
-    return `Listening on [${[address, family, port]}]`;
+    return `Express Listening on [${[address, family, port]}]`;
   } catch (error) {
     return Promise.reject(error);
   }
