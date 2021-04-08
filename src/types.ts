@@ -33,7 +33,6 @@ export type LimitRequest = {
   customerOrderId: string; // is ?
   quantity: string; // is number
   price: string; // is number
-  pair: CurrencyPair; //
   side: Side;
 };
 

@@ -1,7 +1,3 @@
-import assert from "assert";
-/** */
-describe("TODO", () => {
-  it("should work", () => {
-    assert.ok(true);
-  });
-});
+/// <reference path="../@types/express/index.d.ts" />
+import "./unit";
+import "./end-to-end";

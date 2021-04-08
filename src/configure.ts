@@ -1,5 +1,5 @@
 import express from "express";
-import store from "./store";
+import { middleware as storeMiddleware } from "./store";
 import api from "./api";
 import state from "./state";
 import auth from "./auth";
@@ -15,7 +15,7 @@ export default async function configure(app: express.Application) {
       requestLogger(),
       auth(),
       express.json(),
-      store(state),
+      storeMiddleware(state),
       api(),
       errorHandler
     );

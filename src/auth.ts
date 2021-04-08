@@ -6,6 +6,7 @@ export function getHash(x: string) {
 }
 
 const isDev = process.env.NODE_ENV !== "production";
+const isTest = process.env.NODE_ENV === "test";
 
 export default function useAuth(): RequestHandler {
   if (!process.env.SECRET) {
@@ -15,13 +16,15 @@ export default function useAuth(): RequestHandler {
     throw new Error("API_KEY required!");
   }
 
-  if (isDev) {
-    console.debug(
-      "Run in 'production' to hide the api key hash\n\tAPI_KEY: %s",
-      getHash(process.env.API_KEY)
-    );
-  } else {
-    console.info("Run in 'development' to see the api key hash");
+  if (!isTest) {
+    if (isDev) {
+      console.debug(
+        "Run in 'production' to hide the api key hash\n\tAPI_KEY: %s",
+        getHash(process.env.API_KEY)
+      );
+    } else {
+      console.info("Run in 'development' to see the api key hash");
+    }
   }
 
   return (req, _res, next) => {
