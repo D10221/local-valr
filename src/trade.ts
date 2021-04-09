@@ -26,7 +26,9 @@ export default function trade(limit: Order, orders: Order[]) {
           return {
             ...out,
             limit,
-            orders: [...out.orders, traded].map(convertBack),
+            orders: [...out.orders, traded]
+              //strings
+              .map(convertBack),
           };
         }
         default: {
