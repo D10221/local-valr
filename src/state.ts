@@ -1,7 +1,7 @@
-import { Orders, TradeHistory } from "./types";
+import { Orderbook } from "./types";
 
-export type State = { orders: Orders; tradeHistory: TradeHistory };
+export type State = { orderbook: Orderbook; };
 
-const state: State = { orders: {}, tradeHistory: {} };
+const state: State = { orderbook: {} };
 
 export default state;

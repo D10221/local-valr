@@ -4,43 +4,38 @@ export type Side = "SELL" | "BUY";
 
 export type TimeInForce = "GTC" | "FOK" | "IOC";
 
+/** Orderbook's Column/row/entry schema */
 export type Order = {
   id: string;
   currencyPair: CurrencyPair;
   side: Side;
   quantity: string; // is number
   price: string; // is number
-
   // postOnly: boolean, // not implemented
-  customerOrderId: string; // is ?
-  timeInForce?: TimeInForce;
+  // customerOrderId: string; // is ?
+  // timeInForce?: TimeInForce; //not implemented
+  requestid: string,
+  balance: string,
 };
 
-export type OrderBook = {
+/** Store/Slice/Table Schema */
+export type Orderbook = {
+  [key: string]: Order;
+};
+/** Api Request */
+export type LimitRequest = {
+  requestid: string,
+  currencyPair: CurrencyPair;
+  quantity: string; // is number
+  price: string; // is number
+  side: Side;
+  // customerOrderId: string; // is ?
+};
+/** API Response */
+export type OrderBookResponse = {
   side: Side;
   quantity: string;
   price: string;
   currencyPair: CurrencyPair;
   orderCount: number;
-};
-
-export type Orders = {
-  [key: string]: Order;
-};
-
-export type LimitRequest = {
-  currencyPair: CurrencyPair;
-  customerOrderId: string; // is ?
-  quantity: string; // is number
-  price: string; // is number
-  side: Side;
-};
-
-export type TradeHistoryRecord = {
-  orderid: string;
-  tradedAt: string; // Date
-};
-
-export type TradeHistory = {
-  [key: string]: TradeHistoryRecord;
 };

@@ -17,34 +17,17 @@ export default {
   >(r: Resolver<Params, Context, Result>): Resolver<Params, Context, Result> {
     return r;
   },
-  handleJson: jsonHandler,
-  handleAny: anyHandler,
+  handleJson,
 };
 /** simple JSON request handler */
-function jsonHandler<
+function handleJson<
   Params extends ParamsDictionary = ParamsDictionary,
   Context extends Request = Request,
   Result = any
 >(r: Resolver<Params, Context, Result>): RequestHandler {
   return async (req: Context, res, next) => {
     try {
-      const ret = await r(req);
-      res.json(ret);
-    } catch (error) {
-      next(error);
-    }
-  };
-}
-/** simple request handler */
-function anyHandler<
-  Params extends ParamsDictionary = ParamsDictionary,
-  Context extends Request = Request,
-  Result = any
->(r: Resolver<Params, Context, Result>): RequestHandler {
-  return async (req: Context, res, next) => {
-    try {
-      const ret = await r(req);
-      res.send(ret);
+      res.json(await r(req));
     } catch (error) {
       next(error);
     }

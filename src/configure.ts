@@ -1,5 +1,5 @@
 import express from "express";
-import { middleware as storeMiddleware } from "./store";
+import { expressMiddleware as storeMiddleware } from "./store";
 import api from "./api";
 import state from "./state";
 import auth from "./auth";

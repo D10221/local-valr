@@ -7,7 +7,7 @@ import start from "../src/start";
 import configure from "../src/configure";
 import fs from "fs";
 import { getHash } from "../src/auth";
-import type { OrderBook } from "../src/types";
+import { OrderBookResponse } from "../src/types";
 
 describe("end-to-end", () => {
   before(async () => {
@@ -51,35 +51,37 @@ describe("end-to-end", () => {
       },
     });
     if (!r.ok) throw new Error(`${r.statusText} (${r.status})`);
-    assert.strictEqual("done", await r.text());
+    const { id, requestid } = await r.json();
+    assert.strictEqual(typeof id, "string");
+    assert.strictEqual(typeof requestid, "string");
   });
 
   it("orderbook", async () => {
     const {
       asks,
       bids,
-    }: { asks: OrderBook[]; bids: OrderBook[] } = await fetch(
+    }: { asks: OrderBookResponse[]; bids: OrderBookResponse[] } = await fetch(
       `http://localhost:${port}/api/BTCZAR/orderbook`,
       {
         headers: {
           "API-KEY": getHash(process.env.API_KEY),
           "Content-Type": "application/json",
         },
-      }
+      },
     ).then((x) => x.json());
     assert.strictEqual("BTCZAR", asks[0].currencyPair);
     assert.strictEqual(0, bids.length);
   });
 
   it("tradehistory", async () => {
-    const x: OrderBook[] = await fetch(
+    const x: OrderBookResponse[] = await fetch(
       `http://localhost:${port}/api/BTCZAR/tradehistory`,
       {
         headers: {
           "API-KEY": getHash(process.env.API_KEY),
           "Content-Type": "application/json",
         },
-      }
+      },
     ).then((x) => x.json());
     assert.strictEqual("BTCZAR", x[0].currencyPair);
     assert.strictEqual(1, x.length);
