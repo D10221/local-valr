@@ -6,7 +6,7 @@ import validate, { ValidationError } from "./validate";
 import { pipe } from "ramda";
 import uid, { isValidFloat } from "./util";
 import { invertSide } from "./sides";
-import { Order } from "./types";
+import trade from "./trade";
 /** */
 export default {
   /**
@@ -52,7 +52,9 @@ export default {
   /** */
   limit: resolver.create(
     async ({ store, body: { currencyPair, quantity, price, side } }) => {
-      const { createLimitOrder, balance } = orderbookStore.actions(store);
+      const { createOrder, updateOrders: update } = orderbookStore.actions(
+        store,
+      );
 
       const requestid = uid();
       // ..
@@ -65,9 +67,9 @@ export default {
       };
       // ...
       validate.limitRequest(payload);
-      // ...
-      createLimitOrder(payload);
-      // ...
+
+      createOrder(payload); // ... database
+      
       const state = store.getState();
       const orderbook = select.raw(state);
 
@@ -76,43 +78,14 @@ export default {
         invertSide(side),
       )(orderbook);
 
-      const limit = convert(select.findByRequestid(requestid)(orderbook));
+      const limit = select.findByRequestid(requestid)(orderbook);
 
-      const traded = orders.map(convert).reduce(
-        (out, order) => {
-          // sell
-          if (
-            order.balance >= out.limit.balance &&
-            order.price <= out.limit.price
-          ) {
-            const limit = {
-              ...out.limit,
-              balance: out.limit.balance - order.balance,
-            };
-            const traded = {
-              ...order,
-              quantity: order.balance - limit.balance,
-            };
-            return {
-              ...out,
-              limit,
-              orders: [...out.orders, traded].map(convertBack),
-            };
-          }
-          return out;
-        },
-        // seed
-        {
-          limit: {
-            quantity: limit.quantity,
-            price: limit.price,
-            balance: limit.balance,
-          },
-          orders: [] as Order[],
-        },
-      );
+      const traded = trade(limit, orders);
 
-      balance(traded.orders);
+      if (traded.orders.length) {
+        // ... database
+        update(traded.orders);
+      }
 
       console.log(store.getState());
 
@@ -121,43 +94,8 @@ export default {
         requestid,
         // transaction balance
         balance: traded.limit.quantity,
+        traded: Boolean(traded.orders.length),
       };
     },
   ),
 };
-/** */
-function convert({
-  quantity,
-  price,
-  balance,
-  ...order
-}: Order): Omit<Order, "quantity" | "price" | "balance"> & {
-  quantity: number;
-  price: number;
-  balance: number;
-} {
-  return {
-    ...order,
-    quantity: parseFloat(quantity),
-    price: parseFloat(price),
-    balance: parseFloat(balance),
-  };
-}
-/** */
-function convertBack({
-  quantity,
-  price,
-  balance,
-  ...order
-}: Omit<Order, "quantity" | "price" | "balance"> & {
-  quantity: number;
-  price: number;
-  balance: number;
-}) {
-  return {
-    ...order,
-    quantity: quantity.toString(),
-    price: price.toString(),
-    balance: balance.toString(),
-  };
-}

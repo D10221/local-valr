@@ -37,6 +37,7 @@ describe("limit", () => {
     );
     assert.strictEqual(typeof id, "string");
     assert.strictEqual(typeof requestid, "string");
+    // TODO: validate balance
   });
 });
 describe("orderbook", () => {

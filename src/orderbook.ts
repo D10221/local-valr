@@ -3,12 +3,14 @@ import { PayloadAction } from "@reduxjs/toolkit";
 import uid from "./util";
 import type { LimitRequest, Order, Orderbook } from "./types";
 
-/** Redux's store's slice*/
+/** 
+ * Redux's store's slice ... database like
+ * */
 const slice = createSlice({
   name: "orderbook",
   initialState: {} as Orderbook,
   reducers: {
-    createLimitOrder: (
+    createOrder: (
       state: Orderbook,
       { payload }: PayloadAction<LimitRequest>,
     ) => {
@@ -25,18 +27,18 @@ const slice = createSlice({
         // createdAt: Date.now()
       };
     },
-    balance: (state: Orderbook, { payload }: PayloadAction<Order[]>) => {
+    updateOrders: (state: Orderbook, { payload }: PayloadAction<Order[]>) => {
       for (let order of payload) {
         state[order.id] = {
           ...order,
-          // balance: TODO
         };
       }
     },
   },
 });
 
-export const actions = (store: Store) =>  bindActionCreators(slice.actions, store.dispatch);
+export const actions = (store: Store) =>
+  bindActionCreators(slice.actions, store.dispatch);
 
 /** */
 export default slice;
