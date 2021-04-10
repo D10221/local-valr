@@ -1,17 +1,27 @@
 import { BUY, invertSide } from "../sides";
 import { Order } from "../types";
 import { convert, convertBack } from "./order-input";
-/** */
+/**
+ * takes orders , limit where order side != limit.side
+ * returns traded limit and traded orders
+ */
 export default function trade(orders: Order[], limit: Order): [Order, Order[]] {
   const book = orders
+  .filter(
+    (x) =>
+      // order side != limit.side
+        x.side === invertSide(limit.side) &&
+        // filter limit price
+        parseFloat(x.price) <= parseFloat(limit.price),
+    )
+    // sort by price
     .sort((a, b) => {
       const p1 = parseFloat(a.price);
       const p2 = parseFloat(b.price);
       const sort = p1 > p2 ? 1 : p1 < p2 ? -1 : 0;
       return limit.side === BUY ? sort : sort * -1;
     })
-    .filter((x) => x.side === invertSide(limit.side))
-    .filter((x) => parseFloat(x.price) <= parseFloat(limit.price))
+    // group by price
     .reduce(
       (out, next, index) => {
         const prev = out[next.price] ?? { orders: [] as Order[] };
@@ -37,7 +47,7 @@ export default function trade(orders: Order[], limit: Order): [Order, Order[]] {
           index: number;
           orders: Order[];
         };
-      }
+      },
     );
   //
   const bookEntries = Object.values(book);
@@ -59,7 +69,7 @@ export default function trade(orders: Order[], limit: Order): [Order, Order[]] {
             }
           }
         }
-      })()
+      })(),
     ),
   ];
 }
