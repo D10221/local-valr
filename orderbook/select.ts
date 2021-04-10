@@ -1,9 +1,9 @@
 import { groupBy, map, pipe, slice, sort } from "ramda";
-import { aggregateBy, filter, findBy, mapi, toList, toListOf } from "./util";
-import { State } from "./state";
-import { CurrencyPair, Orderbook, Order, Side } from "./types";
+import { aggregateBy, filter, findBy, mapi, toList, toListOf } from "../util";
+import { selector } from "./slice";
+import { CurrencyPair, Order, Orderbook, Side } from "./types";
 /** */
-export const raw = (state: State) => state.orderbook;
+export const orderbook = selector;
 /** */
 export const findByRequestid = (requestid: string) =>
   findBy<Order>((x) => x.requestid === requestid);

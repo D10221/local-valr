@@ -1,8 +1,8 @@
-import { createSlice, Store, bindActionCreators } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
-import uid from "./util";
-import type { LimitRequest, Order, Orderbook } from "./types";
-
+import uid from "../util";
+import { LimitRequest, Order, Orderbook } from "./types";
+import { Store, bindActionCreators } from "@reduxjs/toolkit";
 /**
  * Redux's store's slice ... database like
  * */
@@ -36,9 +36,8 @@ const slice = createSlice({
     },
   },
 });
-
+export const selector = (state: { orderbook: Orderbook }) => state.orderbook;
 export const actions = (store: Store) =>
   bindActionCreators(slice.actions, store.dispatch);
 
-/** */
-export default slice;
+export default slice.reducer;

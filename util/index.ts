@@ -15,7 +15,7 @@ export const aggregate = <T>(f: (x: T) => string) => (entries: T[]) => ({
 export const aggregateBy = <T>(prop: (x: T) => any) =>
   pipe(groupBy(prop), Object.values, map(aggregate(prop)));
 /** */
-export const toList = <T>(o: { [key: string]: T }) => Object.values(o);
+export const toList = <T>(o: { [key: string]: T }): T[] => Object.values(o);
 /** typescript helper  */
 export const toListOf = <T>() => (o: { [key: string]: T }) => Object.values(o);
 /** */

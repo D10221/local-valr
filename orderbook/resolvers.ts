@@ -1,26 +1,26 @@
-import * as currencyPairs from "./currency-pairs";
-import * as orderbookStore from "./orderbook";
-import * as select from "./select";
-import resolver from "./resolver";
-import validate, { ValidationError } from "./validate";
 import { pipe } from "ramda";
-import uid, { isValidFloat } from "./util";
+import resolver from "../resolver";
+import uid, { isValidFloat } from "../util";
+import { isCurrencyPair } from "./currency-pairs";
+import * as select from "./select";
 import { invertSide } from "./sides";
+import { actions } from "./slice";
 import trade from "./trade";
+import validate, { ValidationError } from "./validate";
 /** */
 export default {
   /**
-   * Get the trade history for a given currency pair.
+   * @description Get the trade history for a given currency pair.
    * The results of this request may be filtered by datetime.
    * The skip and limit parameters may be applied to paginate the filtered results.
    */
   tradeHistory: resolver.create(
     async ({ store, params: { currencyPair }, query }) => {
-      if (!currencyPairs.isCurrencyPair(currencyPair)) {
+      if (!isCurrencyPair(currencyPair)) {
         throw new ValidationError("BAD 'currencyPair'");
       }
       return pipe(
-        select.raw,
+        select.orderbook,
         select.tradeHistory(
           currencyPair,
           (isValidFloat(query?.skip) && query.skip) || undefined,
@@ -36,10 +36,11 @@ export default {
    * Orders of the same price are aggregated.
    */
   orderbook: resolver.create(async ({ store, params: { currencyPair } }) => {
-    if (!currencyPairs.isCurrencyPair(currencyPair))
-      throw new Error("Bad currencyPairs");
+    if (!isCurrencyPair(currencyPair)) throw new Error("Bad currencyPairs");
     const state = store.getState();
-    const [asks, bids] = select.orderedBook(currencyPair)(select.raw(state));
+    const [asks, bids] = select.orderedBook(currencyPair)(
+      select.orderbook(state)
+    );
     return {
       asks: asks
         .map(({ count, ...x }) => ({ ...x, orderCount: count }))
@@ -52,9 +53,7 @@ export default {
   /** */
   limit: resolver.create(
     async ({ store, body: { currencyPair, quantity, price, side } }) => {
-      const { createOrder, updateOrders: update } = orderbookStore.actions(
-        store
-      );
+      const { createOrder, updateOrders: update } = actions(store);
 
       const requestid = uid();
       // ..
@@ -71,7 +70,8 @@ export default {
       createOrder(payload); // ... database
 
       const state = store.getState();
-      const orderbook = select.raw(state);
+
+      const orderbook = select.orderbook(state);
 
       const orders = select.orderedSide(
         currencyPair,
