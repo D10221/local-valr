@@ -1,13 +1,19 @@
 import express from "express";
-import { middleware as storeMiddleware } from "./store";
-import api from "./api";
-import state from "./state";
+import { api, reducer as orderbook } from "../orderbook";
+import useStore from "./use-store";
 import auth from "./auth";
 import errorHandler from "./error-handler";
 import requestLogger from "./request-logger";
+import { configureStore } from "@reduxjs/toolkit";
 /** */
 export default async function configure(app: express.Application) {
   try {
+    const store = configureStore({
+      reducer: {
+        orderbook,
+      },
+      preloadedState: { orderbook: {} },
+    });
     // TODO: app.use('helmet')
     // TODO: app.use('rate-limit')
     app.use(
@@ -15,7 +21,7 @@ export default async function configure(app: express.Application) {
       requestLogger(),
       auth(),
       express.json(),
-      storeMiddleware(state),
+      useStore(store),
       api(),
       errorHandler
     );

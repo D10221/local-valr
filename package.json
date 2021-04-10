@@ -21,15 +21,16 @@
     "node-fetch": "^2.6.1",
     "prettier": "^2.2.1",
     "ramda": "^0.27.1",
+    "rimraf": "^3.0.2",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.3"
   },
   "scripts": {
-    "dev": "node --inspect -r ts-node/register src/index.ts",
+    "dev": "node --inspect -r ts-node/register server/index.ts",
     "start": "node .",
-    "build": "rm dist -rf && esbuild --platform=node --bundle src/index.ts --outdir=dist --sourcemap",
+    "build": "rimraf dist -rf && esbuild --platform=node --bundle server/index.ts --outdir=dist --sourcemap",
     "test": "cross-env NODE_ENV=test mocha",
-    "format": "prettier src/**/*.ts test/**/*.ts ./*.json -w",
+    "format": "prettier -w './**/*.{js,ts,md,json}'",
     "prepare": "husky install",
     "lint-staged": "lint-staged"
   },
