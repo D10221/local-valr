@@ -14,8 +14,8 @@ export type Order = {
   // postOnly: boolean, // not implemented
   // customerOrderId: string; // is ?
   // timeInForce?: TimeInForce; //not implemented
-  requestid: string,
-  balance: string,
+  requestid: string;
+  balance: string;
 };
 
 /** Store/Slice/Table Schema */
@@ -24,7 +24,7 @@ export type Orderbook = {
 };
 /** Api Request */
 export type LimitRequest = {
-  requestid: string,
+  requestid: string;
   currencyPair: CurrencyPair;
   quantity: string; // is number
   price: string; // is number

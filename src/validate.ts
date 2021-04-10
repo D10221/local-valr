@@ -7,7 +7,7 @@ export default {
   limitRequest: (x: LimitRequest): x is LimitRequest => {
     if (!currencyPairs.isCurrencyPair(x.currencyPair)) {
       throw new ValidationError(
-        `BAD 'currencyPairs' [${currencyPairs.values.join("|")}]`,
+        `BAD 'currencyPairs' [${currencyPairs.values.join("|")}]`
       );
     }
     if (!sides.isValid(x.side)) {
@@ -21,7 +21,7 @@ export default {
     }
     return true;
   },
-}
+};
 /** */
 export class ValidationError extends Error {
   code = 400;

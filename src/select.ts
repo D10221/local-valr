@@ -14,14 +14,14 @@ export const sortByPrice = sort((a: Order, b: Order) => {
 });
 /** Generic filter */
 export function filterCurreny<T extends { currencyPair: CurrencyPair }>(
-  currencyPair: string,
+  currencyPair: string
 ) {
   return (x: T) => Boolean(currencyPair) && x.currencyPair === currencyPair;
 }
 /** */
 export const groupBySide = pipe(
   groupBy((x: Order) => x.side),
-  ({ BUY, SELL }) => [SELL || [], BUY || []],
+  ({ BUY, SELL }) => [SELL || [], BUY || []]
 );
 /**
  * @description returns
@@ -35,16 +35,16 @@ export const orderedBook = (currencyPair: CurrencyPair) =>
     filter(filterCurreny(currencyPair)),
     groupBySide,
     map(sortByPrice),
-    map(aggregateBy((x) => x.price)),
+    map(aggregateBy((x) => x.price))
   );
 /** */
 export const orderedSide = (currencyPair: CurrencyPair, side: Side) =>
-pipe(
-  toListOf<Order>(),
-  filter(filterCurreny(currencyPair)),
-  filter(x=> x.side === side),
-  sortByPrice,  
-);
+  pipe(
+    toListOf<Order>(),
+    filter(filterCurreny(currencyPair)),
+    filter((x) => x.side === side),
+    sortByPrice
+  );
 /** */
 export type TradeHistoryEntry = {
   price: string;
@@ -59,7 +59,7 @@ export type TradeHistoryEntry = {
 /** */
 export const toTradeHistory = (
   { price, quantity, currencyPair, id, side: takerSide }: Order,
-  sequenceId?: number,
+  sequenceId?: number
 ): TradeHistoryEntry => ({
   price,
   quantity,
@@ -74,7 +74,7 @@ export const toTradeHistory = (
 export const tradeHistory = (
   currencyPair: CurrencyPair,
   skip?: number,
-  limit?: number,
+  limit?: number
 ) =>
   pipe(
     (orderbook: Orderbook) => orderbook,
@@ -83,5 +83,5 @@ export const tradeHistory = (
     mapi(toTradeHistory),
     slice(skip, limit),
     /** Type Bug somewhere */
-    (x: TradeHistoryEntry[]) => x,
+    (x: TradeHistoryEntry[]) => x
   );

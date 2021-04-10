@@ -24,10 +24,10 @@ export default {
         select.tradeHistory(
           currencyPair,
           (isValidFloat(query?.skip) && query.skip) || undefined,
-          (isValidFloat(query?.limit) && query.limit) || undefined,
-        ),
+          (isValidFloat(query?.limit) && query.limit) || undefined
+        )
       )(store.getState());
-    },
+    }
   ),
   /**
    * @description returns a list of the top 'N'' bids and asks in the order book.
@@ -53,7 +53,7 @@ export default {
   limit: resolver.create(
     async ({ store, body: { currencyPair, quantity, price, side } }) => {
       const { createOrder, updateOrders: update } = orderbookStore.actions(
-        store,
+        store
       );
 
       const requestid = uid();
@@ -69,13 +69,13 @@ export default {
       validate.limitRequest(payload);
 
       createOrder(payload); // ... database
-      
+
       const state = store.getState();
       const orderbook = select.raw(state);
 
       const orders = select.orderedSide(
         currencyPair,
-        invertSide(side),
+        invertSide(side)
       )(orderbook);
 
       const limit = select.findByRequestid(requestid)(orderbook);
@@ -96,6 +96,6 @@ export default {
         balance: traded.limit.quantity,
         traded: Boolean(traded.orders.length),
       };
-    },
+    }
   ),
 };

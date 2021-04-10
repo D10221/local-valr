@@ -33,7 +33,7 @@ describe("limit", () => {
           currencyPair: "BTCZAR",
           requestid: "1234",
         },
-      }),
+      })
     );
     assert.strictEqual(typeof id, "string");
     assert.strictEqual(typeof requestid, "string");
@@ -43,7 +43,7 @@ describe("limit", () => {
 describe("orderbook", () => {
   it("works", async () => {
     const actual = await resolvers.orderbook(
-      createRequest({ params: { currencyPair: "BTCZAR" } }),
+      createRequest({ params: { currencyPair: "BTCZAR" } })
     );
     assert.strictEqual(actual.asks.length, 0);
     assert.strictEqual(actual.bids.length, 1);
@@ -54,7 +54,7 @@ describe("orderbook", () => {
 describe("tradeHistory", () => {
   it("works", async () => {
     const x = await resolvers.tradeHistory(
-      createRequest({ params: { currencyPair: "BTCZAR" } }),
+      createRequest({ params: { currencyPair: "BTCZAR" } })
     );
     assert.strictEqual("BTCZAR", x[0].currencyPair);
   });

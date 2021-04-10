@@ -45,7 +45,7 @@ export default function trade(limit: Order, orders: Order[]) {
         balance,
       },
       orders: [] as Order[],
-    },
+    }
   );
 }
 /** TODO */

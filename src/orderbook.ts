@@ -3,7 +3,7 @@ import { PayloadAction } from "@reduxjs/toolkit";
 import uid from "./util";
 import type { LimitRequest, Order, Orderbook } from "./types";
 
-/** 
+/**
  * Redux's store's slice ... database like
  * */
 const slice = createSlice({
@@ -12,7 +12,7 @@ const slice = createSlice({
   reducers: {
     createOrder: (
       state: Orderbook,
-      { payload }: PayloadAction<LimitRequest>,
+      { payload }: PayloadAction<LimitRequest>
     ) => {
       const { requestid, currencyPair, price, quantity, side } = payload;
       const id = uid();

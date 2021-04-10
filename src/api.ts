@@ -7,7 +7,10 @@ import resolvers from "./resolvers";
 export default function useApi() {
   var api = Router();
   api.get("/:currencyPair/orderbook", resolver.handleJson(resolvers.orderbook));
-  api.get("/:currencyPair/tradehistory",resolver.handleJson(resolvers.tradeHistory));
+  api.get(
+    "/:currencyPair/tradehistory",
+    resolver.handleJson(resolvers.tradeHistory)
+  );
   api.post("/orders/limit", resolver.handleJson(resolvers.limit));
   return api;
 }

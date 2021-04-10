@@ -67,7 +67,7 @@ describe("end-to-end", () => {
           "API-KEY": getHash(process.env.API_KEY),
           "Content-Type": "application/json",
         },
-      },
+      }
     ).then((x) => x.json());
     assert.strictEqual("BTCZAR", asks[0].currencyPair);
     assert.strictEqual(0, bids.length);
@@ -81,7 +81,7 @@ describe("end-to-end", () => {
           "API-KEY": getHash(process.env.API_KEY),
           "Content-Type": "application/json",
         },
-      },
+      }
     ).then((x) => x.json());
     assert.strictEqual("BTCZAR", x[0].currencyPair);
     assert.strictEqual(1, x.length);
