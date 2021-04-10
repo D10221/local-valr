@@ -21,7 +21,7 @@ export const sortByPrice = sort((a: Order, b: Order) => {
   return a.side === BUY ? ret : ret * -1;
 });
 /** Generic filter */
-export function filterCurreny<T extends { currencyPair: CurrencyPair }>(
+export function filterCurrency<T extends { currencyPair: CurrencyPair }>(
   currencyPair: string
 ) {
   return (x: T) => Boolean(currencyPair) && x.currencyPair === currencyPair;
@@ -40,17 +40,21 @@ export const groupBySide = pipe(
 export const orderedBook = (currencyPair: CurrencyPair) =>
   pipe(
     toListOf<Order>(),
-    filter(filterCurreny(currencyPair)),
+    filter(filterCurrency(currencyPair)),
     groupBySide,
     map(sortByPrice),
     map(aggregateBy((x) => x.price))
   );
+
+export const filterBySide = (side: Side) =>
+  filter((x: Order) => x.side === side);
+
 /** */
 export const orderedSide = (currencyPair: CurrencyPair, side: Side) =>
   pipe(
     toListOf<Order>(),
-    filter(filterCurreny(currencyPair)),
-    filter((x) => x.side === side),
+    filter(filterCurrency(currencyPair)),
+    filterBySide(side),
     sortByPrice
   );
 /** */
@@ -87,7 +91,7 @@ export const tradeHistory = (
   pipe(
     (orderbook: Orderbook) => orderbook,
     toList,
-    filter(filterCurreny(currencyPair)),
+    filter(filterCurrency(currencyPair)),
     mapi(toTradeHistory),
     slice(skip, limit),
     /** Type Bug somewhere */

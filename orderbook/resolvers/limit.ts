@@ -5,7 +5,11 @@ import { actions } from "../slice";
 import * as select from "../select";
 import trade from "./trade";
 import validate from "./validate";
-/** */
+/**
+ * ONLY TRADING LIMIT
+ * It should trade the whole orderbook of every request
+ * both sides
+ */
 export default createResolver(
   async ({ store, body: { currencyPair, quantity, price, side } }) => {
     const { createOrder, updateOrders: update } = actions(store);
@@ -35,10 +39,15 @@ export default createResolver(
 
     const limit = select.findByRequestid(requestid)(orderbook);
 
-    const [tradedLimit, tradedOrders] = trade(limit, orders);
+    const [tradedLimit, tradedOrders] = trade(orders, limit);
 
     const traded = Boolean(tradedOrders.length);
     if (traded) {
+      // *simplistic*
+      // Update orderbook ,
+      // there is no accounts
+      // there is no uses
+      // it should balance accounts too,
       update(tradedOrders);
     }
 

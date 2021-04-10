@@ -76,14 +76,14 @@ export function newOrder(
     quantity,
     currencyPair,
   }: {
-    balance: number;
+    balance?: number;
     price: number;
     quantity: number;
     currencyPair?: CurrencyPair;
   }
 ): Order {
   return convertBack({
-    balance,
+    balance: balance ?? quantity,
     currencyPair: currencyPair ?? BTCZAR,
     id: uid(),
     price,
