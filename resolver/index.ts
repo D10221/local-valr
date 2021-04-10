@@ -7,20 +7,16 @@ export type Resolver<
   Context extends Request = Request<Params>,
   Result = any
 > = (context: Context) => Promise<Result>;
-/** */
-export default {
-  /** typescript helper */
-  create: function resolver<
-    Params extends ParamsDictionary = ParamsDictionary,
-    Context extends Request = Request,
-    Result = any
-  >(r: Resolver<Params, Context, Result>): Resolver<Params, Context, Result> {
-    return r;
-  },
-  handleJson,
-};
+/** typescript helper */
+export function createResolver<
+  Params extends ParamsDictionary = ParamsDictionary,
+  Context extends Request = Request,
+  Result = any
+>(r: Resolver<Params, Context, Result>): Resolver<Params, Context, Result> {
+  return r;
+}
 /** simple JSON request handler */
-function handleJson<
+export function handleJson<
   Params extends ParamsDictionary = ParamsDictionary,
   Context extends Request = Request,
   Result = any
@@ -33,3 +29,8 @@ function handleJson<
     }
   };
 }
+/** */
+export default {
+  createResolver,
+  handleJson,
+};

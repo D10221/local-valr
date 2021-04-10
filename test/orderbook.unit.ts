@@ -1,10 +1,10 @@
 import assert from "assert";
-import { LimitRequest, resolvers } from "../orderbook";
+import { LimitRequest, limit, orderbook, tradeHistory } from "../orderbook";
 import { createRequest } from "./util";
 /** */
 describe("limit", () => {
   it("works", async () => {
-    const { id, requestid } = await resolvers.limit(
+    const { id, requestid } = await limit(
       createRequest<LimitRequest>({
         body: {
           side: "BUY",
@@ -22,7 +22,7 @@ describe("limit", () => {
 });
 describe("orderbook", () => {
   it("works", async () => {
-    const actual = await resolvers.orderbook(
+    const actual = await orderbook(
       createRequest({ params: { currencyPair: "BTCZAR" } })
     );
     assert.strictEqual(actual.asks.length, 0);
@@ -33,7 +33,7 @@ describe("orderbook", () => {
 });
 describe("tradeHistory", () => {
   it("works", async () => {
-    const x = await resolvers.tradeHistory(
+    const x = await tradeHistory(
       createRequest({ params: { currencyPair: "BTCZAR" } })
     );
     assert.strictEqual("BTCZAR", x[0].currencyPair);

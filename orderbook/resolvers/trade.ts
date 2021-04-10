@@ -1,4 +1,4 @@
-import { Order } from "./types";
+import { Order } from "../types";
 /** */
 type OrderInput = Omit<Order, "quantity" | "price" | "balance"> & {
   quantity: number;

@@ -1,7 +1,14 @@
 import { groupBy, map, pipe, slice, sort } from "ramda";
-import { aggregateBy, filter, findBy, mapi, toList, toListOf } from "../util";
-import { selector } from "./slice";
-import { CurrencyPair, Order, Orderbook, Side } from "./types";
+import {
+  aggregateBy,
+  filter,
+  findBy,
+  mapi,
+  toList,
+  toListOf,
+} from "../../util";
+import { selector } from "../slice";
+import { CurrencyPair, Order, Orderbook, Side } from "../types";
 /** */
 export const orderbook = selector;
 /** */

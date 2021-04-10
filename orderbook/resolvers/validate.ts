@@ -1,7 +1,7 @@
-import { isValidFloat } from "../util";
-import * as currencyPairs from "./currency-pairs";
-import * as sides from "./sides";
-import { LimitRequest } from "./types";
+import { isValidFloat } from "../../util";
+import * as currencyPairs from "../currency-pairs";
+import * as sides from "../sides";
+import { LimitRequest } from "../types";
 /** */
 export default {
   limitRequest: (x: LimitRequest): x is LimitRequest => {
