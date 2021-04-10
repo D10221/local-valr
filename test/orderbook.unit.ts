@@ -1,41 +1,47 @@
-import assert from "assert";
-import { LimitRequest, limit, orderbook, tradeHistory } from "../orderbook";
-import { createRequest } from "./util";
+import {
+  BTCZAR,
+  BUY,
+  limit,
+  LimitRequest,
+  orderbook,
+  tradeHistory,
+} from "../orderbook";
+import { createRequest, strictEqual } from "./util";
 /** */
 describe("limit", () => {
   it("works", async () => {
     const { id, requestid } = await limit(
       createRequest<LimitRequest>({
         body: {
-          side: "BUY",
+          side: BUY,
           quantity: "1",
           price: "1",
-          currencyPair: "BTCZAR",
+          currencyPair: BTCZAR,
           requestid: "1234",
         },
       })
     );
-    assert.strictEqual(typeof id, "string");
-    assert.strictEqual(typeof requestid, "string");
+    strictEqual(typeof id, "string");
+    strictEqual(typeof requestid, "string");
     // TODO: validate balance
   });
 });
 describe("orderbook", () => {
   it("works", async () => {
     const actual = await orderbook(
-      createRequest({ params: { currencyPair: "BTCZAR" } })
+      createRequest({ params: { currencyPair: BTCZAR } })
     );
-    assert.strictEqual(actual.asks.length, 0);
-    assert.strictEqual(actual.bids.length, 1);
-    assert.strictEqual(actual.bids[0].currencyPair, "BTCZAR");
-    assert.strictEqual(actual.bids[0].orderCount, 1);
+    strictEqual(actual.asks.length, 0);
+    strictEqual(actual.bids.length, 1);
+    strictEqual(actual.bids[0].currencyPair, BTCZAR);
+    strictEqual(actual.bids[0].orderCount, 1);
   });
 });
 describe("tradeHistory", () => {
   it("works", async () => {
     const x = await tradeHistory(
-      createRequest({ params: { currencyPair: "BTCZAR" } })
+      createRequest({ params: { currencyPair: BTCZAR } })
     );
-    assert.strictEqual("BTCZAR", x[0].currencyPair);
+    strictEqual(BTCZAR, x[0].currencyPair);
   });
 });

@@ -7,6 +7,7 @@ import {
   toList,
   toListOf,
 } from "../../util";
+import { BUY } from "../sides";
 import { selector } from "../slice";
 import { CurrencyPair, Order, Orderbook, Side } from "../types";
 /** */
@@ -17,7 +18,7 @@ export const findByRequestid = (requestid: string) =>
 /** */
 export const sortByPrice = sort((a: Order, b: Order) => {
   const ret = a.price === b.price ? 0 : a.price > b.price ? 1 : -1;
-  return a.side === "BUY" ? ret : ret * -1;
+  return a.side === BUY ? ret : ret * -1;
 });
 /** Generic filter */
 export function filterCurreny<T extends { currencyPair: CurrencyPair }>(

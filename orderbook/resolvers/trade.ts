@@ -1,35 +1,26 @@
+import { BUY, SELL } from "../sides";
 import { Order } from "../types";
+import { convert, convertBack } from "./order-input";
 /** */
-type OrderInput = Omit<Order, "quantity" | "price" | "balance"> & {
-  quantity: number;
-  price: number;
-  balance: number;
-};
-/** */
-export default function trade(limit: Order, orders: Order[]) {
+export default function trade(limit: Order, orders: Order[]): [Order, Order[]] {
+  const { side } = limit;
   // numbers
-  const { quantity, price, balance, side } = convert(limit);
-
-  return orders.map(convert).reduce(
-    (out, order) => {
+  return orders.reduce(
+    ([limit, orders], order) => {
       switch (side) {
-        case "SELL": {
-          const [limit, traded] = sell(out.limit, order);
-          return {
-            ...out,
-            limit,
-            orders: [...out.orders, traded].map(convertBack),
-          };
+        case SELL: {
+          if (order.balance < limit.balance || order.price > limit.price) {
+            return [limit, orders];
+          }
+          const [_limit, traded] = sell(limit, order);
+          return [_limit, [...orders, traded]];
         }
-        case "BUY": {
-          const [limit, traded] = buy(out.limit, order);
-          return {
-            ...out,
-            limit,
-            orders: [...out.orders, traded]
-              //strings
-              .map(convertBack),
-          };
+        case BUY: {
+          if (order.balance > limit.balance || order.price < limit.price) {
+            return [limit, orders];
+          }
+          const [_limit, traded] = buy(limit, order);
+          return [_limit, [...orders, traded]];
         }
         default: {
           throw new Error(`BAD side '${side}'`);
@@ -37,62 +28,35 @@ export default function trade(limit: Order, orders: Order[]) {
       }
     },
     // seed
-    {
-      limit: {
-        ...limit,
-        quantity,
-        price,
-        balance,
-      },
-      orders: [] as Order[],
-    }
+    [limit, orders]
   );
 }
 /** TODO */
-function sell(limit: OrderInput, order: OrderInput) {
-  if (order.balance < limit.balance || order.price > limit.price) {
-    return [limit, order];
-  }
+function sell(limit: Order, order: Order): [Order, Order] {
+  const l = convert(limit);
+  const o = convert(order);
   const _limit = {
-    ...limit,
-    balance: limit.balance - order.balance,
+    ...l,
+    balance: l.balance - o.balance,
   };
   const traded = {
-    ...order,
-    quantity: order.balance - limit.balance,
+    ...o,
+    quantity: o.balance - l.balance,
   };
-  return [_limit, traded];
+
+  return [convertBack(_limit), convertBack(traded)];
 }
 /** TODO */
-function buy(limit: OrderInput, order: OrderInput) {
-  if (order.balance > limit.balance || order.price < limit.price) {
-    return [limit, order];
-  }
+function buy(limit: Order, order: Order): [Order, Order] {
+  const l = convert(limit);
+  const o = convert(order);
   const _limit = {
-    ...limit,
-    balance: limit.balance - order.balance,
+    ...l,
+    balance: l.balance - o.balance,
   };
   const traded = {
-    ...order,
-    quantity: order.balance - limit.balance,
+    ...o,
+    quantity: o.balance - l.balance,
   };
-  return [_limit, traded];
-}
-/** */
-function convert({ quantity, price, balance, ...order }: Order): OrderInput {
-  return {
-    ...order,
-    quantity: parseFloat(quantity),
-    price: parseFloat(price),
-    balance: parseFloat(balance),
-  };
-}
-/** */
-function convertBack({ quantity, price, balance, ...order }: OrderInput) {
-  return {
-    ...order,
-    quantity: quantity.toString(),
-    price: price.toString(),
-    balance: balance.toString(),
-  };
+  return [convertBack(_limit), convertBack(traded)];
 }

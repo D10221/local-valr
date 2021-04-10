@@ -22,7 +22,7 @@ export default createResolver(
     // ...
     validate.limitRequest(payload);
 
-    createOrder(payload); // ... database
+    createOrder(payload);
 
     const state = store.getState();
 
@@ -35,21 +35,19 @@ export default createResolver(
 
     const limit = select.findByRequestid(requestid)(orderbook);
 
-    const traded = trade(limit, orders);
+    const [tradedLimit, tradedOrders] = trade(limit, orders);
 
-    if (traded.orders.length) {
-      // ... database
-      update(traded.orders);
+    const traded = Boolean(tradedOrders.length);
+    if (traded) {
+      update(tradedOrders);
     }
-
-    console.log(store.getState());
 
     return {
       id: limit?.id,
       requestid,
       // transaction balance
-      balance: traded.limit.quantity,
-      traded: Boolean(traded.orders.length),
+      balance: tradedLimit.balance,
+      traded,
     };
   }
 );

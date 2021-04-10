@@ -1,8 +1,7 @@
-import assert from "assert";
 import fetch from "node-fetch";
-import { OrderBookResponse } from "../orderbook";
+import { BTCZAR, OrderBookResponse, SELL } from "../orderbook";
 import { getHash } from "../server/auth";
-import { startServer } from "./util";
+import { startServer, strictEqual } from "./util";
 /** */
 describe("end-to-end", () => {
   before(startServer);
@@ -14,10 +13,10 @@ describe("end-to-end", () => {
     const r = await fetch(`http://localhost:${port}/api/orders/limit`, {
       method: "POST",
       body: JSON.stringify({
-        side: "SELL",
+        side: SELL,
         quantity: "1",
         price: "1",
-        currencyPair: "BTCZAR",
+        currencyPair: BTCZAR,
         customerOrderId: "1234",
       }),
       headers: {
@@ -27,8 +26,8 @@ describe("end-to-end", () => {
     });
     if (!r.ok) throw new Error(`${r.statusText} (${r.status})`);
     const { id, requestid } = await r.json();
-    assert.strictEqual(typeof id, "string");
-    assert.strictEqual(typeof requestid, "string");
+    strictEqual(typeof id, "string");
+    strictEqual(typeof requestid, "string");
   });
 
   it("gets orderbook", async () => {
@@ -44,8 +43,8 @@ describe("end-to-end", () => {
         },
       }
     ).then((x) => x.json());
-    assert.strictEqual("BTCZAR", asks[0].currencyPair);
-    assert.strictEqual(0, bids.length);
+    strictEqual(BTCZAR, asks[0].currencyPair);
+    strictEqual(0, bids.length);
   });
 
   it("gets tradehistory", async () => {
@@ -58,7 +57,7 @@ describe("end-to-end", () => {
         },
       }
     ).then((x) => x.json());
-    assert.strictEqual("BTCZAR", x[0].currencyPair);
-    assert.strictEqual(1, x.length);
+    strictEqual(BTCZAR, x[0].currencyPair);
+    strictEqual(1, x.length);
   });
 });
