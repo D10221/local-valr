@@ -14,7 +14,7 @@ export default function trade(orders: Order[], limit: Order): [Order, Order[]] {
         // order side != limit.side
         x.side === invertSide(limit.side) &&
         // filter limit price
-        parseFloat(x.price) <= parseFloat(limit.price),
+        parseFloat(x.price) <= parseFloat(limit.price)
     )
     // sort by price
     .sort(sortByPriceFrom(limit))
@@ -44,7 +44,7 @@ export default function trade(orders: Order[], limit: Order): [Order, Order[]] {
           index: number;
           orders: Order[];
         };
-      },
+      }
     );
   //
   const bookEntries = Object.values(book);
@@ -66,7 +66,7 @@ export default function trade(orders: Order[], limit: Order): [Order, Order[]] {
             }
           }
         }
-      })(),
+      })()
     ),
   ];
 }

@@ -1,10 +1,11 @@
+import { filter, pipe, values } from "ramda";
 import { createResolver } from "../../resolver";
 import uid from "../../util";
-import { invertSide } from "../sides";
+import orderbook from "../select";
 import { actions } from "../slice";
-import * as select from "../select";
-import trade from "./trade";
+import { Order } from "../types";
 import validate from "../validate";
+import trade from "./trade";
 /**
  * ONLY TRADING LIMIT
  * It should trade the whole orderbook of every request
@@ -30,16 +31,15 @@ export default createResolver(
 
     const state = store.getState();
 
-    const orderbook = select.orderbook(state);
+    const getOrders = pipe(
+      orderbook,
+      values,
+      filter((x: Order) => x.currencyPair === currencyPair)
+    );
 
-    const orders = select.orderedSide(
-      currencyPair,
-      invertSide(side)
-    )(orderbook);
+    const limit = getOrders(state).find((x) => x.requestid === requestid);
 
-    const limit = select.findByRequestid(requestid)(orderbook);
-
-    const [tradedLimit, tradedOrders] = trade(orders, limit);
+    const [tradedLimit, tradedOrders] = trade(getOrders(state), limit);
 
     const traded = Boolean(tradedOrders.length);
     if (traded) {

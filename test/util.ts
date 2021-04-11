@@ -90,6 +90,6 @@ export function newOrder(
     quantity,
     side,
     requestid: uid(),
-    createdAt: Date.now()
+    createdAt: Date.now(),
   });
 }

@@ -2,7 +2,8 @@ import { pipe } from "ramda";
 import { createResolver } from "../../resolver";
 import { isValidFloat } from "../../util";
 import { isCurrencyPair } from "../currency-pairs";
-import * as select from "../select";
+import orderbook from "../select";
+import tradeHistory from "../select/trade-history";
 import { ValidationError } from "../validate";
 
 /**
@@ -16,8 +17,8 @@ export default createResolver(
       throw new ValidationError("BAD 'currencyPair'");
     }
     return pipe(
-      select.orderbook,
-      select.tradeHistory(
+      orderbook,
+      tradeHistory(
         currencyPair,
         (isValidFloat(query?.skip) && query.skip) || undefined,
         (isValidFloat(query?.limit) && query.limit) || undefined

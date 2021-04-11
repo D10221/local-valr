@@ -1,7 +1,7 @@
 import { createResolver } from "../../resolver";
 import { isCurrencyPair } from "../currency-pairs";
-import * as select from "../select";
-
+import orderbook from "../select";
+import orderedBook from "../select/ordered-Book";
 /**
  * @description returns a list of the top 'N'' bids and asks in the order book.
  * Ask orders are sorted by price ascending.
@@ -11,9 +11,7 @@ import * as select from "../select";
 export default createResolver(async ({ store, params: { currencyPair } }) => {
   if (!isCurrencyPair(currencyPair)) throw new Error("Bad currencyPairs");
   const state = store.getState();
-  const [asks, bids] = select.orderedBook(currencyPair)(
-    select.orderbook(state)
-  );
+  const [asks, bids] = orderedBook(currencyPair)(orderbook(state));
   return {
     asks: asks
       .map(({ count, ...x }) => ({ ...x, orderCount: count }))

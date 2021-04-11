@@ -6,7 +6,7 @@ export type OrderInput = Omit<Order, "quantity" | "price" | "balance"> & {
   balance: number;
 };
 /**
- * to Order with number values 
+ * to Order with number values
  */
 export function toOrderInput({
   quantity,

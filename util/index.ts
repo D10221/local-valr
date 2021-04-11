@@ -1,25 +1,10 @@
 import { randomBytes } from "crypto";
-import { groupBy, map, pipe, sum } from "ramda";
-/** */
-export const filter = <T>(f: (x: T) => boolean) => (list: T[]) =>
-  list.filter(f);
-/** */
-export const find = <T>(f: (t: T) => boolean) => (list: T[]) => list.find(f);
-/** */
-export const aggregate = <T>(f: (x: T) => string) => (entries: T[]) => ({
-  ...entries[0],
-  quantity: sum(entries.map((x) => parseFloat(f(x)))).toString(),
-  count: entries.length,
-});
-/** */
-export const aggregateBy = <T>(prop: (x: T) => any) =>
-  pipe(groupBy(prop), Object.values, map(aggregate(prop)));
-/** */
-export const toList = <T>(o: { [key: string]: T }) => Object.values(o);
-/** typescript helper  */
-export const toListOf = <T>() => (o: { [key: string]: T }) => Object.values(o);
-/** */
-export const findBy = <T>(f: (x: T) => boolean) => pipe(toList, find(f));
+/**
+ * typescript helper
+ * specify type 1st to easy type inference
+ *   */
+export const toList = <T>() => (o: { [key: string]: T }) => Object.values(o);
+
 /** rambda doesn't provide index */
 export const mapi = <T, U>(fn: (x: T, i: number) => U) => (
   list: readonly T[]
