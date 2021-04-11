@@ -1,7 +1,7 @@
 import { filter, find, pipe, values } from "ramda";
 import { createResolver } from "../../resolver";
 import orderbook from "../select";
-import { actions } from "../slice";
+import { actions } from "../store";
 import { Order } from "../types";
 import validate from "../validate";
 import trade from "./trade";

@@ -1,13 +1,17 @@
 import { isValidFloat } from "../util";
-import * as currencyPairs from "./currency-pairs";
-import { isValidSide, SIDES } from "./sides";
-import { LimitRequest } from "./types";
+import {
+  CURRENCY_PAIRS,
+  isCurrencyPair,
+  isValidSide,
+  LimitRequest,
+  SIDES,
+} from "./types";
 /** */
 export default {
   limitRequest: (x: LimitRequest): x is LimitRequest => {
-    if (!currencyPairs.isCurrencyPair(x.currencyPair)) {
+    if (!isCurrencyPair(x.currencyPair)) {
       throw new ValidationError(
-        `BAD 'currencyPairs' [${currencyPairs.CURRENCY_PAIRS.join("|")}]`
+        `BAD 'currencyPairs' [${CURRENCY_PAIRS.join("|")}]`
       );
     }
     if (!isValidSide(x.side)) {

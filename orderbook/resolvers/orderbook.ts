@@ -1,7 +1,7 @@
 import { createResolver } from "../../resolver";
-import { isCurrencyPair } from "../currency-pairs";
 import orderbook from "../select";
 import orderedBook from "../select/ordered-Book";
+import { isCurrencyPair } from "../types";
 /**
  * @description returns a list of the top 'N'' bids and asks in the order book.
  * Ask orders are sorted by price ascending.

@@ -40,5 +40,9 @@ const slice = createSlice({
 export const selector = (state: { orderbook: Orderbook }) => state.orderbook;
 export const actions = (store: Store) =>
   bindActionCreators(slice.actions, store.dispatch);
-
+/**
+ * Store's slice
+ * don't like name slice. it's abiguos, and too Redux specific
+ *
+ *  */
 export default slice.reducer;

@@ -1,5 +1,5 @@
 import express from "express";
-import { api, reducer as orderbook } from "../orderbook";
+import * as orderbook from "../orderbook";
 import useStore from "./use-store";
 import auth from "./auth";
 import errorHandler from "./error-handler";
@@ -10,7 +10,7 @@ export default async function configure(app: express.Application) {
   try {
     const store = configureStore({
       reducer: {
-        orderbook,
+        orderbook: orderbook.reducer,
       },
       preloadedState: { orderbook: {} },
     });
@@ -22,7 +22,7 @@ export default async function configure(app: express.Application) {
       auth(),
       express.json(),
       useStore(store),
-      api(),
+      orderbook.api(),
       errorHandler
     );
     // TODO: app.use(error-handler);

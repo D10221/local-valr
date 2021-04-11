@@ -1,8 +1,6 @@
 import { sortByPriceFrom } from "../select/sort-by-price";
 import { sortByTime } from "../select/sort-by-time";
-import { invertSide } from "../sides";
-import { Order } from "../types";
-import { toOrder, toOrderInput } from "../order-input";
+import { Order, invertSide, toOrder, toOrderInput } from "../types";
 /**
  * takes orders , limit where order side != limit.side
  * returns traded limit and traded orders

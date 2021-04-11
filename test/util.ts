@@ -11,7 +11,7 @@ import {
   reducer as orderbook,
   Side,
 } from "../orderbook";
-import { toOrder } from "../orderbook/order-input";
+import { toOrder } from "../orderbook/";
 import configure from "../server/configure";
 import start from "../server/start";
 import uid from "../util";

@@ -1,5 +1,4 @@
 import { equals } from "ramda";
-
 import { CurrencyPair } from "./types";
 export const BTCZAR: CurrencyPair = "BTCZAR";
 export const ETHZAR: CurrencyPair = "ETHZAR";
