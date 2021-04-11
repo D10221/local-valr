@@ -24,7 +24,7 @@ const slice = createSlice({
         side,
         requestid,
         balance: quantity,
-        // createdAt: Date.now()
+        createdAt: Date.now()
       };
     },
     updateOrders: (state: Orderbook, { payload }: PayloadAction<Order[]>) => {

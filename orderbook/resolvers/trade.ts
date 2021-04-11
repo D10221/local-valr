@@ -1,26 +1,23 @@
-import { BUY, invertSide } from "../sides";
+import { sortByPriceFrom } from "../select/sort-by-price";
+import { sortByTime } from "../select/sort-by-time";
+import { invertSide } from "../sides";
 import { Order } from "../types";
-import { convert, convertBack } from "./order-input";
+import { toOrder, toOrderInput } from "../order-input";
 /**
  * takes orders , limit where order side != limit.side
  * returns traded limit and traded orders
  */
 export default function trade(orders: Order[], limit: Order): [Order, Order[]] {
   const book = orders
-  .filter(
-    (x) =>
-      // order side != limit.side
+    .filter(
+      (x) =>
+        // order side != limit.side
         x.side === invertSide(limit.side) &&
         // filter limit price
         parseFloat(x.price) <= parseFloat(limit.price),
     )
     // sort by price
-    .sort((a, b) => {
-      const p1 = parseFloat(a.price);
-      const p2 = parseFloat(b.price);
-      const sort = p1 > p2 ? 1 : p1 < p2 ? -1 : 0;
-      return limit.side === BUY ? sort : sort * -1;
-    })
+    .sort(sortByPriceFrom(limit))
     // group by price
     .reduce(
       (out, next, index) => {
@@ -51,21 +48,21 @@ export default function trade(orders: Order[], limit: Order): [Order, Order[]] {
     );
   //
   const bookEntries = Object.values(book);
-  let tradedlimit = convert(limit);
+  let tradedlimit = toOrderInput(limit);
   return [
-    convertBack(tradedlimit),
-    Array.from(
+    /* limit  */ toOrder(tradedlimit),
+    /* orders */ Array.from(
       (function* () {
-        for (let entry of bookEntries) {
-          if (tradedlimit.balance <= 0) return;
-          for (let o of entry.orders.map(convert)) {
+        for (let { orders } of bookEntries) {
+          const input = orders.sort(sortByTime).map(toOrderInput);
+          for (let o of input) {
             if (tradedlimit.balance <= 0) return;
-            const b1 = tradedlimit.balance - o.balance; // transaction balance
+            const b1 = tradedlimit.balance - o.balance;
             if (b1 >= 0) {
               // min ?
               tradedlimit.balance = b1;
               o.balance = o.quantity - b1;
-              yield convertBack(o);
+              yield toOrder(o);
             }
           }
         }

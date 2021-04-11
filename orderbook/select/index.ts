@@ -1,4 +1,4 @@
-import { groupBy, map, pipe, slice, sort } from "ramda";
+import { groupBy, map, pipe, slice } from "ramda";
 import {
   aggregateBy,
   filter,
@@ -7,19 +7,15 @@ import {
   toList,
   toListOf,
 } from "../../util";
-import { BUY } from "../sides";
 import { selector } from "../slice";
 import { CurrencyPair, Order, Orderbook, Side } from "../types";
+import sortByPrice from "./sort-by-price";
+export { sortByPrice } 
 /** */
 export const orderbook = selector;
 /** */
 export const findByRequestid = (requestid: string) =>
-  findBy<Order>((x) => x.requestid === requestid);
-/** */
-export const sortByPrice = sort((a: Order, b: Order) => {
-  const ret = a.price === b.price ? 0 : a.price > b.price ? 1 : -1;
-  return a.side === BUY ? ret : ret * -1;
-});
+  findBy<Order>((x) => x.requestid === requestid);  
 /** Generic filter */
 export function filterCurrency<T extends { currencyPair: CurrencyPair }>(
   currencyPair: string

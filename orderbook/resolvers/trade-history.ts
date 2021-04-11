@@ -3,7 +3,7 @@ import { createResolver } from "../../resolver";
 import { isValidFloat } from "../../util";
 import { isCurrencyPair } from "../currency-pairs";
 import * as select from "../select";
-import { ValidationError } from "./validate";
+import { ValidationError } from "../validate";
 
 /**
  * @description Get the trade history for a given currency pair.

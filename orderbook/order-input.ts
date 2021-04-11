@@ -1,12 +1,14 @@
-import { Order } from "../types";
+import { Order } from "./types";
 /** */
 export type OrderInput = Omit<Order, "quantity" | "price" | "balance"> & {
   quantity: number;
   price: number;
   balance: number;
 };
-/** */
-export function convert({
+/**
+ * to Order with number values 
+ */
+export function toOrderInput({
   quantity,
   price,
   balance,
@@ -19,8 +21,10 @@ export function convert({
     balance: parseFloat(balance),
   };
 }
-/** */
-export function convertBack({
+/**
+ * to Order with String values
+ */
+export function toOrder({
   quantity,
   price,
   balance,

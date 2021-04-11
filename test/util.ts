@@ -11,7 +11,7 @@ import {
   reducer as orderbook,
   Side,
 } from "../orderbook";
-import { convertBack } from "../orderbook/resolvers/order-input";
+import { toOrder } from "../orderbook/order-input";
 import configure from "../server/configure";
 import start from "../server/start";
 import uid from "../util";
@@ -82,7 +82,7 @@ export function newOrder(
     currencyPair?: CurrencyPair;
   }
 ): Order {
-  return convertBack({
+  return toOrder({
     balance: balance ?? quantity,
     currencyPair: currencyPair ?? BTCZAR,
     id: uid(),
@@ -90,5 +90,6 @@ export function newOrder(
     quantity,
     side,
     requestid: uid(),
+    createdAt: Date.now()
   });
 }

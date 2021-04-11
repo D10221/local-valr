@@ -16,6 +16,7 @@ export type Order = {
   // timeInForce?: TimeInForce; //not implemented
   requestid: string;
   balance: string;
+  createdAt: number;
 };
 
 /** Store/Slice/Table Schema */

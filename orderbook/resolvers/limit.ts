@@ -4,7 +4,7 @@ import { invertSide } from "../sides";
 import { actions } from "../slice";
 import * as select from "../select";
 import trade from "./trade";
-import validate from "./validate";
+import validate from "../validate";
 /**
  * ONLY TRADING LIMIT
  * It should trade the whole orderbook of every request
