@@ -1,7 +1,6 @@
 export { default as api } from "./api";
-export { default as reducer } from "./slice";
+export { default as reducer } from "./store";
+export { default as trade } from "./trade";
+export { default as round } from "./round";
 export * from "./resolvers";
 export * from "./types";
-export * from "./currency-pairs";
-export * as select from "./select";
-export * from "./sides";

@@ -1,8 +1,7 @@
-import { sortByPriceFrom } from "../select/sort-by-price";
-import { sortByTime } from "../select/sort-by-time";
-import { invertSide } from "../sides";
-import { Order } from "../types";
-import { toOrder, toOrderInput } from "../order-input";
+import round from "./round";
+import { sortByPriceFrom } from "./select/sort-by-price";
+import { sortByTime } from "./select/sort-by-time";
+import { Order, invertSide } from "./types";
 /**
  * takes orders , limit where order side != limit.side
  * returns traded limit and traded orders
@@ -14,7 +13,7 @@ export default function trade(orders: Order[], limit: Order): [Order, Order[]] {
         // order side != limit.side
         x.side === invertSide(limit.side) &&
         // filter limit price
-        parseFloat(x.price) <= parseFloat(limit.price),
+        x.price <= limit.price
     )
     // sort by price
     .sort(sortByPriceFrom(limit))
@@ -25,12 +24,12 @@ export default function trade(orders: Order[], limit: Order): [Order, Order[]] {
         const orders = [...(prev.orders ?? []), next];
         return {
           ...out,
-          [next.price]: {
+          [next.price.toString()]: {
             key: next.price,
-            price: parseFloat(next.price),
+            price: next.price,
             orders,
             count: orders.length,
-            quantity: orders.reduce((a, b) => a + parseFloat(b.quantity), 0),
+            quantity: orders.reduce((a, b) => round(a + b.quantity), 0),
             index,
           },
         };
@@ -44,29 +43,31 @@ export default function trade(orders: Order[], limit: Order): [Order, Order[]] {
           index: number;
           orders: Order[];
         };
-      },
+      }
     );
   //
   const bookEntries = Object.values(book);
-  let tradedlimit = toOrderInput(limit);
+  let tradedlimit = { ...limit };
   return [
-    /* limit  */ toOrder(tradedlimit),
+    /* limit  */ tradedlimit,
     /* orders */ Array.from(
       (function* () {
-        for (let { orders } of bookEntries) {
-          const input = orders.sort(sortByTime).map(toOrderInput);
-          for (let o of input) {
-            if (tradedlimit.balance <= 0) return;
-            const b1 = tradedlimit.balance - o.balance;
-            if (b1 >= 0) {
+        for (let { orders: _orders } of bookEntries) {
+          const input = _orders.sort(sortByTime);
+          for (let order of input) {
+            if (tradedlimit.balance <= 0 || order.balance <= 0) return;
+            const limitBalance = tradedlimit.balance - order.balance;
+            const orderBalance =
+              order.balance - (tradedlimit.balance - limitBalance);
+            if (limitBalance >= 0 && orderBalance >= 0) {
               // min ?
-              tradedlimit.balance = b1;
-              o.balance = o.quantity - b1;
-              yield toOrder(o);
+              tradedlimit.balance = round(limitBalance);
+              order.balance = orderBalance;
+              yield round(order);
             }
           }
         }
-      })(),
+      })()
     ),
   ];
 }

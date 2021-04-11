@@ -1,10 +1,11 @@
+import { filter, find, pipe, values } from "ramda";
 import { createResolver } from "../../resolver";
-import uid from "../../util";
-import { invertSide } from "../sides";
-import { actions } from "../slice";
-import * as select from "../select";
-import trade from "./trade";
+import orderbook from "../select";
+import { actions } from "../store";
+import trade from "../trade";
+import { Order } from "../types";
 import validate from "../validate";
+import toString from "../to-string";
 /**
  * ONLY TRADING LIMIT
  * It should trade the whole orderbook of every request
@@ -12,12 +13,22 @@ import validate from "../validate";
  */
 export default createResolver(
   async ({ store, body: { currencyPair, quantity, price, side } }) => {
-    const { createOrder, updateOrders: update } = actions(store);
+    const getOrders = pipe(
+      orderbook,
+      values,
+      filter((x: Order) => x.currencyPair === currencyPair)
+    );
 
-    const requestid = uid();
+    const getRecord = (id: string) =>
+      pipe(
+        store.getState,
+        getOrders,
+        find((x: Order) => x.id === id)
+      )();
+
+    const { createOrder, updateOrders: update } = actions(store);
     // ..
     const payload = {
-      requestid,
       currencyPair,
       quantity,
       price,
@@ -26,20 +37,14 @@ export default createResolver(
     // ...
     validate.limitRequest(payload);
 
-    createOrder(payload);
+    const {
+      payload: { id },
+    } = createOrder(payload);
 
-    const state = store.getState();
-
-    const orderbook = select.orderbook(state);
-
-    const orders = select.orderedSide(
-      currencyPair,
-      invertSide(side)
-    )(orderbook);
-
-    const limit = select.findByRequestid(requestid)(orderbook);
-
-    const [tradedLimit, tradedOrders] = trade(orders, limit);
+    const [tradedLimit, tradedOrders] = trade(
+      getOrders(store.getState()),
+      getRecord(id)
+    );
 
     const traded = Boolean(tradedOrders.length);
     if (traded) {
@@ -52,10 +57,9 @@ export default createResolver(
     }
 
     return {
-      id: limit?.id,
-      requestid,
+      id: tradedLimit?.id,
       // transaction balance
-      balance: tradedLimit.balance,
+      balance: toString(tradedLimit.balance),
       traded,
     };
   }

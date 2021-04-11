@@ -14,10 +14,9 @@ describe("end-to-end", () => {
       method: "POST",
       body: JSON.stringify({
         side: SELL,
-        quantity: "1",
-        price: "1",
+        quantity: 1,
+        price: 1,
         currencyPair: BTCZAR,
-        customerOrderId: "1234",
       }),
       headers: {
         "API-KEY": getHash(process.env.API_KEY),
@@ -25,9 +24,10 @@ describe("end-to-end", () => {
       },
     });
     if (!r.ok) throw new Error(`${r.statusText} (${r.status})`);
-    const { id, requestid } = await r.json();
+    const { id, traded, balance } = await r.json();
     strictEqual(typeof id, "string");
-    strictEqual(typeof requestid, "string");
+    strictEqual(false, traded);
+    strictEqual("1.0000000000000000", balance);
   });
 
   it("gets orderbook", async () => {
