@@ -89,7 +89,6 @@ export function newOrder(
     price,
     quantity,
     side,
-    requestid: uid(),
     createdAt: Date.now(),
   });
 }

@@ -25,9 +25,10 @@ describe("end-to-end", () => {
       },
     });
     if (!r.ok) throw new Error(`${r.statusText} (${r.status})`);
-    const { id, requestid } = await r.json();
+    const { id, traded, balance } = await r.json();
     strictEqual(typeof id, "string");
-    strictEqual(typeof requestid, "string");
+    strictEqual(false, traded);
+    strictEqual("1", balance);
   });
 
   it("gets orderbook", async () => {

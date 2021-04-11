@@ -1,6 +1,5 @@
-import { filter, pipe, values } from "ramda";
+import { filter, find, pipe, values } from "ramda";
 import { createResolver } from "../../resolver";
-import uid from "../../util";
 import orderbook from "../select";
 import { actions } from "../slice";
 import { Order } from "../types";
@@ -13,12 +12,22 @@ import trade from "./trade";
  */
 export default createResolver(
   async ({ store, body: { currencyPair, quantity, price, side } }) => {
-    const { createOrder, updateOrders: update } = actions(store);
+    const getOrders = pipe(
+      orderbook,
+      values,
+      filter((x: Order) => x.currencyPair === currencyPair)
+    );
 
-    const requestid = uid();
+    const getRecord = (id: string) =>
+      pipe(
+        store.getState,
+        getOrders,
+        find((x: Order) => x.id === id)
+      )();
+
+    const { createOrder, updateOrders: update } = actions(store);
     // ..
     const payload = {
-      requestid,
       currencyPair,
       quantity,
       price,
@@ -27,19 +36,14 @@ export default createResolver(
     // ...
     validate.limitRequest(payload);
 
-    createOrder(payload);
+    const {
+      payload: { id },
+    } = createOrder(payload);
 
-    const state = store.getState();
-
-    const getOrders = pipe(
-      orderbook,
-      values,
-      filter((x: Order) => x.currencyPair === currencyPair)
+    const [tradedLimit, tradedOrders] = trade(
+      getOrders(store.getState()),
+      getRecord(id)
     );
-
-    const limit = getOrders(state).find((x) => x.requestid === requestid);
-
-    const [tradedLimit, tradedOrders] = trade(getOrders(state), limit);
 
     const traded = Boolean(tradedOrders.length);
     if (traded) {
@@ -52,8 +56,7 @@ export default createResolver(
     }
 
     return {
-      id: limit?.id,
-      requestid,
+      id: tradedLimit?.id,
       // transaction balance
       balance: tradedLimit.balance,
       traded,
