@@ -55,7 +55,7 @@ export default function trade(orders: Order[], limit: Order): [Order, Order[]] {
         for (let { orders: _orders } of bookEntries) {
           const input = _orders.sort(sortByTime);
           for (let order of input) {
-            if (tradedlimit.balance <= 0 || order.balance <= 0) return;
+            if (tradedlimit.balance <= 0) return;
             const limitBalance = tradedlimit.balance - order.balance;
             const orderBalance =
               order.balance - (tradedlimit.balance - limitBalance);
