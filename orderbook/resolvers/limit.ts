@@ -2,9 +2,10 @@ import { filter, find, pipe, values } from "ramda";
 import { createResolver } from "../../resolver";
 import orderbook from "../select";
 import { actions } from "../store";
+import trade from "../trade";
 import { Order } from "../types";
 import validate from "../validate";
-import trade from "./trade";
+import toString from "../to-string";
 /**
  * ONLY TRADING LIMIT
  * It should trade the whole orderbook of every request
@@ -58,7 +59,7 @@ export default createResolver(
     return {
       id: tradedLimit?.id,
       // transaction balance
-      balance: tradedLimit.balance,
+      balance: toString(tradedLimit.balance),
       traded,
     };
   }

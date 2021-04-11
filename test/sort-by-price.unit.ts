@@ -8,45 +8,45 @@ describe("sortByPrice", () => {
       {
         currencyPair: BTCZAR,
         id: "0",
-        price: "1",
-        quantity: "1",
+        price: 1,
+        quantity: 1,
         side: BUY,
-        balance: "",
+        balance: 1,
         createdAt: 0,
       },
       {
         currencyPair: BTCZAR,
-        id: "0",
-        price: "2",
-        quantity: "1",
+        id: "1",
+        price: 2,
+        quantity: 1,
         side: BUY,
-        balance: "",
+        balance: 1,
         createdAt: 0,
       },
     ]).map((x) => x.price);
-    deepStrictEqual(["1", "2"], asks);
+    deepStrictEqual([1, 2], asks);
   });
   it("sorts SELL orders desc.", () => {
     const bids = sortByPrice([
       {
         currencyPair: BTCZAR,
         id: "0",
-        price: "1",
-        quantity: "1",
+        price: 1,
+        quantity: 1,
         side: SELL,
-        balance: "",
+        balance: 0,
         createdAt: 0,
       },
       {
         currencyPair: BTCZAR,
         id: "0",
-        price: "2",
-        quantity: "1",
+        price: 2,
+        quantity: 1,
         side: SELL,
-        balance: "",
+        balance: 0,
         createdAt: 0,
       },
     ]).map((x) => x.price);
-    deepStrictEqual(["2", "1"], bids);
+    deepStrictEqual([2, 1], bids);
   });
 });

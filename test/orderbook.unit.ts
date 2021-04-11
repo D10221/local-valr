@@ -7,8 +7,8 @@ describe("orderbook", () => {
       createRequest<LimitRequest>({
         body: {
           side: BUY,
-          quantity: "1",
-          price: "1",
+          quantity: 1,
+          price: 1,
           currencyPair: BTCZAR,
         },
       })

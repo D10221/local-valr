@@ -2,6 +2,7 @@ import { createResolver } from "../../resolver";
 import orderbook from "../select";
 import orderedBook from "../select/ordered-Book";
 import { isCurrencyPair } from "../types";
+import toString from "../to-string";
 /**
  * @description returns a list of the top 'N'' bids and asks in the order book.
  * Ask orders are sorted by price ascending.
@@ -15,9 +16,21 @@ export default createResolver(async ({ store, params: { currencyPair } }) => {
   return {
     asks: asks
       .map(({ count, ...x }) => ({ ...x, orderCount: count }))
-      .slice(0, 40),
+      .slice(0, 40)
+      .map(({ balance, price, quantity, ...o }) => ({
+        ...o,
+        balance: toString(balance),
+        price: toString(price),
+        quantity: toString(quantity),
+      })),
     bids: bids
       .map(({ count, ...x }) => ({ ...x, orderCount: count }))
-      .slice(0, 40),
+      .slice(0, 40)
+      .map(({ balance, price, quantity, ...o }) => ({
+        ...o,
+        balance: toString(balance),
+        price: toString(price),
+        quantity: toString(quantity),
+      })),
   };
 });

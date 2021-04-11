@@ -8,14 +8,14 @@ describe("limit", () => {
       createRequest<LimitRequest>({
         body: {
           side: BUY,
-          quantity: "1",
-          price: "1",
+          quantity: 1,
+          price: 1,
           currencyPair: BTCZAR,
         },
       })
     );
     strictEqual(typeof id, "string");
-    strictEqual("1", balance);
+    strictEqual("1.0000000000000000", balance);
     strictEqual(false, traded);
     // TODO: validate balance
   });
